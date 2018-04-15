@@ -1,3 +1,4 @@
+import javax.crypto.Cipher;
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -10,10 +11,7 @@ public class MyForm extends JDialog {
     private JButton decode;
     private JButton aboutButton;
     private JButton exitButton;
-    private JTextArea keyPoem;
-    private JButton openPoemFile;
     private JFileChooser jFileChooser;
-    private JFileChooser poemJFileChooser;
 
     public MyForm(Controller controller) {
         setContentPane(contentPane);
@@ -36,7 +34,6 @@ public class MyForm extends JDialog {
             }
         });
 
-        // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -46,22 +43,18 @@ public class MyForm extends JDialog {
 
         code.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                char[][] keys = controller.verifyKeyValue(keyPoem.getText(), poemJFileChooser.getSelectedFile());
-                String codedText = controller.onCode(textArea.getText(), keys);
+                String codedText = controller.onEncryptDecrypt(textArea.getText(), Cipher.ENCRYPT_MODE);
                 textArea.setText(codedText);
             }
         });
 
         decode.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                char[][] keys = controller.verifyKeyValue(keyPoem.getText(), poemJFileChooser.getSelectedFile());
-                String textToDecode = textArea.getText().replaceAll("[,/ ]", "");
-                String decodedText = controller.onDecode(textToDecode, keys);
+                String decodedText = controller.onEncryptDecrypt(textArea.getText(), Cipher.DECRYPT_MODE);
                 textArea.setText(decodedText);
             }
         });
 
-        // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -78,15 +71,6 @@ public class MyForm extends JDialog {
         aboutButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onAbout();
-            }
-        });
-
-        openPoemFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                poemJFileChooser = new JFileChooser();
-                String output = controller.onOpenFile(poemJFileChooser);
-                keyPoem.setText(output);
             }
         });
     }

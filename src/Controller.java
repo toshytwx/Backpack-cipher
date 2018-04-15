@@ -12,12 +12,8 @@ public class Controller {
         this.encryptor = encryptor;
     }
 
-    public String onCode(String incomingText, char[][] keys) {
-        return encryptor.onEncrypt(incomingText, keys);
-    }
-
-    public String onDecode(String incomingText, char[][] keys) {
-        return encryptor.onDecrypt(incomingText, keys);
+    public String onEncryptDecrypt(String incomingText, int decryptMode) {
+        return encryptor.onEncryptDecrypt(incomingText, decryptMode);
     }
 
     public String onOpenFile(JFileChooser jFileChooser) {
@@ -47,33 +43,6 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public char[][] verifyKeyValue(String text, File selectedFile) {
-        char[] poemTextLowerCase = text.toLowerCase().toCharArray();
-        char[][] result = null;
-        try {
-            int rowsCount = getLinesCount(selectedFile);
-            int columnsCount = ((poemTextLowerCase.length % rowsCount) != 0) ? poemTextLowerCase.length / rowsCount + 1 : poemTextLowerCase.length / rowsCount;
-            int letter = 0;
-            result = new char[rowsCount][columnsCount];
-            for (int row = 0; row < rowsCount; row++) {
-                for (int column = 0; column < columnsCount; column++) {
-                    result[row][column] = letter >= poemTextLowerCase.length ? ' ' : poemTextLowerCase[letter];
-                    letter++;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    private int getLinesCount(File file) throws IOException
-    {
-        try (Stream<String> lines = Files.lines(file.toPath())) {
-            return (int) lines.count();
         }
     }
 }

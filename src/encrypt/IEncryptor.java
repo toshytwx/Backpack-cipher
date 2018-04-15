@@ -1,8 +1,7 @@
 package encrypt;
 
-import java.util.ArrayList;
+import javax.crypto.SecretKey;
 
 public interface IEncryptor {
-    String onEncrypt(String incomingText, char[][] keys);
-    String onDecrypt(String incomingText, char[][] keys);
+    String onEncryptDecrypt(String incomingText, int decryptMode);
 }
