@@ -45,6 +45,8 @@ public class DESEncryptor implements IEncryptor {
         DESEncryptor.key = key;
     }
 
+    public static SecretKey getKey() {return key;}
+
     public void setDesCipher(Cipher cipher) {
         this.desCipher = cipher;
     }

@@ -23,10 +23,8 @@ public class Main {
     private static DESEncryptor specializeEncryptor() throws NoSuchAlgorithmException, NoSuchPaddingException {
         KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
         SecretKey desKey = keygenerator.generateKey();
-        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
         DESEncryptor desEncryptor = new DESEncryptor();
         DESEncryptor.setKey(desKey);
-        desEncryptor.setDesCipher(cipher);
         return desEncryptor;
     }
 }

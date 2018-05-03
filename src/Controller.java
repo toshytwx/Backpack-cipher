@@ -1,8 +1,12 @@
+import encrypt.DESEncryptor;
 import encrypt.IEncryptor;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
 public class Controller {
@@ -43,6 +47,17 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void specializeEncryptor(String desMode) {
+        try {
+            Cipher cipher = Cipher.getInstance("DES" + desMode);
+            ((DESEncryptor) encryptor).setDesCipher(cipher);
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
     }
 }
