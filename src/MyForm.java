@@ -1,4 +1,4 @@
-import encrypt.DESEncryptor;
+import encrypt.BackPackEncryptor;
 
 import javax.crypto.Cipher;
 import javax.swing.*;
@@ -14,8 +14,7 @@ public class MyForm extends JDialog {
     private JButton decode;
     private JButton aboutButton;
     private JButton exitButton;
-    private JComboBox desMode;
-    private JLabel keyTf;
+    private JTextField keyTf;
     private JFileChooser jFileChooser;
 
     public MyForm(Controller controller) {
@@ -79,18 +78,6 @@ public class MyForm extends JDialog {
             }
         });
 
-        keyTf.setText(Arrays.toString(DESEncryptor.getKey().getEncoded()));
-        tuneDesMode();
-        controller.specializeEncryptor((String) desMode.getSelectedItem());
-    }
-
-    private void tuneDesMode() {
-        DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
-        defaultComboBoxModel.addElement("/ECB/PKCS5Padding");
-        defaultComboBoxModel.addElement("/CBC/PKCS5Padding");
-        defaultComboBoxModel.addElement("/CBC/NoPadding");
-        defaultComboBoxModel.addElement("/ECB/NoPadding");
-        desMode.setModel(defaultComboBoxModel);
     }
 
     private void onAbout() {

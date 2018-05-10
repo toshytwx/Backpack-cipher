@@ -1,13 +1,11 @@
-import encrypt.DESEncryptor;
+import encrypt.BackPackEncryptor;
 import encrypt.IEncryptor;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.io.*;
-import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
-import java.util.stream.Stream;
 
 public class Controller {
     private IEncryptor encryptor;
@@ -17,7 +15,8 @@ public class Controller {
     }
 
     public String onEncryptDecrypt(String incomingText, int decryptMode) {
-        return encryptor.onEncryptDecrypt(incomingText, decryptMode);
+//        return encryptor.onEncryptDecrypt(incomingText, decryptMode);
+        return null;
     }
 
     public String onOpenFile(JFileChooser jFileChooser) {
@@ -53,7 +52,7 @@ public class Controller {
     public void specializeEncryptor(String desMode) {
         try {
             Cipher cipher = Cipher.getInstance("DES" + desMode);
-            ((DESEncryptor) encryptor).setDesCipher(cipher);
+//            ((BackPackEncryptor) encryptor).setDesCipher(cipher);
         } catch (NoSuchPaddingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
