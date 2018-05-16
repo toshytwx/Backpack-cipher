@@ -6,6 +6,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class Controller {
     private IEncryptor encryptor;
@@ -14,9 +15,12 @@ public class Controller {
         this.encryptor = encryptor;
     }
 
-    public String onEncryptDecrypt(String incomingText, int decryptMode) {
-//        return encryptor.onEncryptDecrypt(incomingText, decryptMode);
-        return null;
+    public String onEncrypt(List<Integer> key, String incomingText) {
+        return encryptor.onEncrypt(key, incomingText);
+    }
+
+    public String onDecrypt(List<Integer> key, String incomingText) {
+        return encryptor.onDecrypt(key, incomingText);
     }
 
     public String onOpenFile(JFileChooser jFileChooser) {
@@ -46,17 +50,6 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void specializeEncryptor(String desMode) {
-        try {
-            Cipher cipher = Cipher.getInstance("DES" + desMode);
-//            ((BackPackEncryptor) encryptor).setDesCipher(cipher);
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
         }
     }
 }

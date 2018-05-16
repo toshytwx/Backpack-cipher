@@ -4,6 +4,9 @@ import javax.crypto.Cipher;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MyForm extends JDialog {
     private JPanel contentPane;
@@ -47,14 +50,14 @@ public class MyForm extends JDialog {
 
         code.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String codedText = controller.onEncryptDecrypt(textArea.getText(), Cipher.ENCRYPT_MODE);
+                String codedText = controller.onEncrypt(getClosedKey(), textArea.getText());
                 textArea.setText(codedText);
             }
         });
 
         decode.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String decodedText = controller.onEncryptDecrypt(textArea.getText(), Cipher.DECRYPT_MODE);
+                String decodedText = controller.onDecrypt(getClosedKey(), textArea.getText());
                 textArea.setText(decodedText);
             }
         });
@@ -78,6 +81,23 @@ public class MyForm extends JDialog {
             }
         });
 
+    }
+
+    private List<Integer> getClosedKey() {
+        List<Integer> closedKey = Stream.of(keyTf.getText().split(" ")).map(Integer::parseInt).collect(Collectors.toList());
+        if (closedKey.size() < 8 || closedKey.size() > 8) {
+            JOptionPane.showMessageDialog(this, "Key must be 8 digits long", "Error", JOptionPane.ERROR_MESSAGE);
+            keyTf.setText("");
+        }
+        for (int i = 0; i < closedKey.size(); i++) {
+            List<Integer> closedElementKey = closedKey.stream().limit(i != 0 ? i - 1 : 0).collect(Collectors.toList());
+                if (closedKey.get(i) < closedElementKey.stream().mapToInt(Integer::intValue).sum()) {
+                    JOptionPane.showMessageDialog(this,"Each element must be bigger than the sum of previous elements!\nProblem at "+ closedKey.get(i), "Error", JOptionPane.ERROR_MESSAGE);
+                    keyTf.setText("");
+                    break;
+                }
+            }
+        return closedKey;
     }
 
     private void onAbout() {

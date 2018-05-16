@@ -1,17 +1,14 @@
 package encrypt;
 
-import com.sun.media.jfxmedia.track.Track;
-import com.sun.xml.internal.ws.util.StringUtils;
+import utils.TripleInt;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BackPackEncryptor implements IEncryptor {
-    public static int R = -1;
-    public static int Q = -1;
+    public int r = -1;
+    public int q = -1;
     private List<Integer> openKey = null;
 
     public BackPackEncryptor() {
@@ -24,7 +21,6 @@ public class BackPackEncryptor implements IEncryptor {
         List<String> cipheredText = new ArrayList<String>();
         char[] chars = incomingText.toCharArray();
         int sum = 0;
-        int c = 0;
         for (int i = 0; i < chars.length; i++)
         {
             char[] charLetter =  new char[1];
@@ -37,7 +33,12 @@ public class BackPackEncryptor implements IEncryptor {
             cipheredText.add(String.valueOf(sum));
             sum = 0;
         }
-        return String.join(" ", String.valueOf(cipheredText.toArray()));
+        StringBuilder stringBuilder = new StringBuilder();
+        Object[] objects = cipheredText.toArray();
+        for (int i = 0; i < objects.length; i++) {
+            stringBuilder.append(objects[i]).append(" ");
+        }
+        return stringBuilder.toString();
     }
 
     @Override
@@ -46,11 +47,14 @@ public class BackPackEncryptor implements IEncryptor {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         String result = "";
-        int multObratnoe = 5;
+        TripleInt tripleInt = new TripleInt();
+        TripleInt gcd = tripleInt.getGCD(r, q);
+
+        int multObratnoe = gcd.getX() % q + q;
         int number;
         for (int word: cryptoText) {
             List<Integer> selectedNumbers = new ArrayList<>();
-            number = word * multObratnoe % Q;
+            number = word * multObratnoe % q;
             while (number > 0)
             {
                 int max = findMax(number, key);
@@ -67,7 +71,17 @@ public class BackPackEncryptor implements IEncryptor {
                 }
             }
             Byte[] data = getBytesFromBinaryString(stringOfBits.toString());
-            result += data.toString();//Fix me
+            byte[] array = new byte[data.length];
+            for (int i = 0; i < data.length; i++) {
+                array[i] = data[i];
+            }
+            String dataString = "!";
+            try {
+                dataString = new String(array, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            result += dataString;
         }
         openKey.subList(0, openKey.size()).clear();
         return result;
@@ -84,17 +98,28 @@ public class BackPackEncryptor implements IEncryptor {
 
     private void generateOpenKey(List<Integer> key) {
         int sum = key.stream().mapToInt(Integer::intValue).sum();
+        Random random = new Random();
         int simple = sum + 1;
         while (true)
         {
             if (isPrimeNumber(simple)) {
-                Q = simple;
+                q = simple;
+                break;
+            } else {
+                simple++;
+            }
+        }
+        while (true) {
+            TripleInt tripleInt = new TripleInt();
+            tripleInt.setX(0);
+            tripleInt.setY(0);
+            r = random.nextInt(q - 1) + 1;
+            if (tripleInt.getGCD(r, q).getD() == 1) {
                 break;
             }
-            else simple++;
         }
         for (Integer num: key) {
-            openKey.add(num * R % Q);
+            openKey.add(num * r % q);
         }
     }
 
