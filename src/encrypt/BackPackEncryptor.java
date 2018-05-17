@@ -27,8 +27,25 @@ public class BackPackEncryptor implements IEncryptor {
             charLetter[0] = incomingText.charAt(i);
             String word = stringToBinary(new String(charLetter).toString());
             char[] wordChars = word.toCharArray();
+            int keyCounter = 0;
             for (int j = 0; j < wordChars.length; j++) {
-                sum += Integer.valueOf(Integer.valueOf(wordChars[j]) * openKey.get(j));
+                switch (Integer.valueOf(wordChars[j])) {
+                    case 48:
+                    {
+                        sum += Integer.valueOf(0 * openKey.get(keyCounter));
+                        keyCounter++;
+                        break;
+                    }
+                    case 49:
+                    {
+                        sum += Integer.valueOf(1 * openKey.get(keyCounter));
+                        keyCounter++;
+                        break;
+                    }
+                }
+                if (j!= 0 && j % 7 == 0) {
+                    keyCounter = 0;
+                }
             }
             cipheredText.add(String.valueOf(sum));
             sum = 0;
@@ -124,7 +141,7 @@ public class BackPackEncryptor implements IEncryptor {
     }
 
     private int findMax(int word, List<Integer> key) {
-        List<Integer> result = key.stream().filter(s -> s > word).collect(Collectors.toList());
+        List<Integer> result = key.stream().filter(s -> s <= word).collect(Collectors.toList());
         return Collections.max(result);
     }
 
@@ -139,12 +156,13 @@ public class BackPackEncryptor implements IEncryptor {
 
     private Byte[] getBytesFromBinaryString(String binary)
     {
-        List<Byte> list = new ArrayList<>();
-        for (int i = 0; i < binary.toCharArray().length; i += 8) {
+        int length = binary.toCharArray().length / 8;
+        Byte[] resultArray = new Byte[length];
+        for (int i = 0; i < length; i += 8) {
             String t = binary.substring(i, 8);
-            list.add(Byte.parseByte(t, 2));
+            resultArray[i] = Byte.parseByte(t, 2);
         }
-        return (Byte[]) list.toArray();
+        return resultArray;
     }
 
 }
