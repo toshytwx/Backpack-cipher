@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,8 +51,11 @@ public class MyForm extends JDialog {
 
         code.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String codedText = controller.onEncrypt(getClosedKey(), textArea.getText());
-                textArea.setText(codedText);
+                List<Integer> closedKey = getClosedKey();
+                if (!Objects.equals(keyTf.getText(), "")) {
+                    String codedText = controller.onEncrypt(closedKey, textArea.getText());
+                    textArea.setText(codedText);
+                }
             }
         });
 
